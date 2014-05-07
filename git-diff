@@ -1,0 +1,49 @@
+#!/bin/sh
+
+function print_example() {
+    echo "Example"
+    echo "  git diff develop master"
+}
+    
+function print_usage() {
+    echo "Usage"
+    echo "  gitdiff <branch|tag|commit> <branch|tag|commit>"
+}
+
+if [ "$1" = "--help" ] || [ "$1" = "-h" ] ; then
+    print_usage
+    exit 0
+fi
+
+FROM="$1"
+TO="$2"
+if [ -z "$FROM" ] || [ -z "$TO" ]; then
+    echo "Error: missing arguments"
+    echo ""
+    print_usage
+    echo ""
+    print_example
+    exit 1
+fi
+
+if ! [ -d .git ]; then # .git folder exists?
+    echo "Error: current directory is not a git root directory"
+    exit 1
+fi
+
+TMP_DIR=${TMPDIR%/}/gitdiff # `%/` removes trailing slash
+rm -rf $TMP_DIR
+for i in $(git diff --name-only $FROM $TO) ; do
+    # setup folder structure
+    mkdir -p $TMP_DIR/"$FROM"/"$(dirname $i)";
+    mkdir -p $TMP_DIR/"$TO"/"$(dirname $i)";
+    
+    # Get revision of files
+    git show "$FROM":"$i" > "$TMP_DIR"/"$FROM"/$i;
+    git show "$TO":"$i" > "$TMP_DIR"/"$TO"/$i;
+done
+
+# Use git's difftool or opendiff as alternative
+DIFFTOOL=$(expr "$(git config --get diff.tool)" '|' "opendiff")
+
+$($DIFFTOOL "$TMP_DIR"/"$FROM" "$TMP_DIR"/"$TO")
