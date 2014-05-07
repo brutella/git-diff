@@ -40,6 +40,7 @@ The scripts uses git's preferred diff tool specified for the config `diff.tool` 
 Matthias Hochgatterer
 
 Github: [https://github.com/brutella/](https://github.com/brutella/)
+
 Twitter: [https://twitter.com/brutella](https://twitter.com/brutella)
 
 ## License
