@@ -31,19 +31,19 @@ if ! [ -d .git ]; then # .git folder exists?
     exit 1
 fi
 
-TMP_DIR=${TMPDIR%/}/gitdiff # `%/` removes trailing slash
-rm -rf $TMP_DIR
+DIR=${TMPDIR%/}/gitdiff # `%/` removes trailing slash
+rm -rf "$DIR"
 for i in $(git diff --name-only $FROM $TO) ; do
     # setup folder structure
-    mkdir -p $TMP_DIR/"$FROM"/"$(dirname $i)";
-    mkdir -p $TMP_DIR/"$TO"/"$(dirname $i)";
+    mkdir -p $DIR/"$FROM"/"$(dirname $i)";
+    mkdir -p $DIR/"$TO"/"$(dirname $i)";
     
     # Get revision of files
-    git show "$FROM":"$i" > "$TMP_DIR"/"$FROM"/$i;
-    git show "$TO":"$i" > "$TMP_DIR"/"$TO"/$i;
+    git show "$FROM":"$i" > "$DIR"/"$FROM"/$i;
+    git show "$TO":"$i" > "$DIR"/"$TO"/$i;
 done
 
 # Use git's difftool or opendiff as alternative
 DIFFTOOL=$(expr "$(git config --get diff.tool)" '|' "opendiff")
 
-$($DIFFTOOL "$TMP_DIR"/"$FROM" "$TMP_DIR"/"$TO")
+$($DIFFTOOL "$DIR"/"$FROM" "$DIR"/"$TO")

@@ -31,7 +31,7 @@ You can compare between branches, tags or commits.
     
     # compare master to tag
     git-diff 1.0.0 master
-    
+
 
 The scripts uses git's preferred diff tool specified for the config `diff.tool` or `opendiff` if no git diff tool is configured.
 
